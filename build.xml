@@ -1,0 +1,50 @@
+<?xml version = "1.0"?>
+<project name = "pdfstamp" basedir = "." default = "build">
+   <property name = "name" value = "pdfstamp"/>
+   <property name = "package" value = "com.eliteguzhva"/>
+   <property name = "src.dir" value = "src"/>
+   <property name = "lib.dir" value = "lib"/>
+   <property name = "build.dir" value = "build"/>
+   <property name = "jar.dir" value = "build/jar"/>
+
+   <path id = "classpath">
+      <fileset dir = "${lib.dir}">
+          <include name = "*.jar"/>
+      </fileset>
+      
+      <pathelement path = "${build.dir}"/>
+   </path>
+
+   <target name = "compile" description = "Compile source tree java files" depends = "clean">
+      <mkdir dir = "${build.dir}"/>
+      <mkdir dir = "${build.dir}/output"/>
+      
+      <javac srcdir = "${src.dir}" destdir = "${build.dir}">
+         <classpath refid = "classpath"/>
+      </javac>
+   </target>
+
+   <target name="build" depends="compile">
+      <mkdir dir = "${jar.dir}"/>
+      <jar destfile="${jar.dir}/${name}.jar" basedir="${build.dir}">
+         <manifest>
+             <attribute name="Main-Class" value="${package}.Main" />
+         </manifest>
+         <zipgroupfileset dir="lib" includes="*.jar"/>
+      </jar>
+   </target>
+
+   <target name = "run">
+       <java jar="${jar.dir}/${name}.jar" fork="true"/>
+   </target>
+ 
+   <target name = "clean" description = "Clean output directories">
+      <delete>
+         <fileset dir = "${build.dir}">
+            <include name = "**/*.class"/>
+            <include name = "**/*.jar"/>
+            <include name = "**/*.pdf"/>
+         </fileset>
+      </delete>
+   </target>
+</project>
